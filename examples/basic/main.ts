@@ -1,14 +1,12 @@
 import express from "express"
-import { createCMS } from "varvar-cms"
+import {CMS} from "varvar-cms"
 
-async function start(){
+async function start() {
 
     const app = express()
 
-    const cms = await createCMS(app,{
-        mongoUri:"mongodb://localhost:27017/varvar-cms"
-    })
-
+    const cms = new CMS({app, mongoUri: "mongodb://localhost:27017/varvar-cms"})
+    await cms.create()
     cms.start()
     app.listen(3000)
 

@@ -1,34 +1,46 @@
 import express from "express"
-import { MongoClient } from "mongodb"
+import {MongoClient} from "mongodb"
 import path from "path"
-import { fileURLToPath } from "url"
+import {fileURLToPath} from "url"
+import {createAuthController} from "./controllers/AuthController"
+import {UserService} from "./services/UserService"
+import {Global} from "./Global";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const adminPath = path.join(__dirname, "../admin")
 
-export interface CMSOptions {
-    mongoUri: string
-}
-
 export class CMS {
+    mongoUri: string
 
-    app: express.Express
-    mongo: MongoClient
+    constructor({...params}: { app: express.Express, mongoUri: string, jwtSecret?: string }) {
+        Global.app = params.app
+        this.mongoUri = params.mongoUri
+        Global.jwtSecret = params.jwtSecret
+    }
 
-    constructor(app: express.Express, mongo: MongoClient) {
-        this.app = app
-        this.mongo = mongo
+    public async create() {
+        Global.mongo = new MongoClient(this.mongoUri)
+        await Global.mongo.connect()
+
+        await UserService.ensureIndexes()
     }
 
     public start() {
-        this.app.get("/health", (req, res) => {
-            res.json({ ok: true })
+        // common middlewares
+        Global.app.use(express.json())
+
+        // health
+        Global.app.get("/health", (req, res) => {
+            res.json({ok: true})
         })
 
-        this.app.use("/admin", express.static(adminPath))
+        // API routes
+        Global.app.use("/api/auth", createAuthController())
 
-        this.app.get("/admin/*", (req, res) => {
+        // admin static
+        Global.app.use("/admin", express.static(adminPath))
+        Global.app.get("/admin/*", (req, res) => {
             res.sendFile(path.join(adminPath, "index.html"))
         })
 
@@ -36,18 +48,4 @@ export class CMS {
         console.log(`Admin UI: http://localhost:3000/admin`)
     }
 
-}
-
-export async function createCMS(
-    app: express.Express,
-    options: CMSOptions
-) {
-
-    const mongo = new MongoClient(options.mongoUri)
-
-    await mongo.connect()
-
-    const cms = new CMS(app, mongo)
-
-    return cms
 }
