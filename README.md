@@ -1,3 +1,5 @@
+# There is nothing to see right now, it's just a skeleton, early stages of developement
+
 ## Run this in two terminals
 
 First for lib debug
