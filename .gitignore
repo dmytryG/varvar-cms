@@ -1,0 +1,4 @@
+node_modules
+.idea
+dist
+packages/core/admin

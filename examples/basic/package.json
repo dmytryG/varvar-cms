@@ -1,0 +1,15 @@
+{
+  "name": "example-basic",
+  "type": "module",
+  "scripts": {
+    "dev": "del node_modules && pnpm install --force && tsx main.ts"
+  },
+  "dependencies": {
+    "express": "^4",
+    "varvar-cms": "../../packages/core"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

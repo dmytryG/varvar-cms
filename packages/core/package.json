@@ -1,0 +1,27 @@
+{
+  "name": "varvar-cms",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc && cd ../admin-ui && pnpm build",
+    "dev": "tsc -w"
+  },
+  "dependencies": {
+    "express": "^4",
+    "jsonwebtoken": "^9",
+    "mongodb": "^6",
+    "path": "^0.12.7"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "typescript": "^5"
+  }
+}
