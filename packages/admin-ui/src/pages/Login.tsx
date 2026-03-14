@@ -1,0 +1,66 @@
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {APIService} from "../services/APIService.ts";
+import {Header} from "../components/Header.tsx";
+
+export const Login: React.FC = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email || !password) return;
+
+        setIsSubmitting(true);
+        try {
+            await APIService.login(email, password);
+            navigate('/dashboard');
+        } catch (error) {
+            // Error is handled in AuthAPI with toast
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div>
+            <Header toDashIfLoggedIn={true}/>
+            <h2>Login to CMS</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={isSubmitting}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        disabled={isSubmitting}
+                    />
+                </div>
+                <button
+                    type="submit"
+                    disabled={isSubmitting || !email || !password}
+                >
+                    {isSubmitting ? 'Logging in...' : 'Login'}
+                </button>
+            </form>
+            <p>
+                Don't have an account? <Link to="/admin/register">Register here</Link>
+            </p>
+        </div>
+    );
+};

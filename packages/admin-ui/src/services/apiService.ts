@@ -1,20 +1,10 @@
+import { toast } from 'react-toastify';
+
 const API_BASE_URL = 'http://localhost:3000/api';
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  name: string;
-}
 
 export interface User {
   id: string;
   email: string;
-  name: string;
   role: 'ADMIN' | 'USER';
 }
 
@@ -28,8 +18,10 @@ export interface SetRoleRequest {
   role: 'ADMIN' | 'USER';
 }
 
-class ApiService {
-  private getAuthHeaders(): HeadersInit {
+export class APIService {
+  private static currentUser: User | null = null;
+
+  private static getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('authToken');
     return {
       'Content-Type': 'application/json',
@@ -37,7 +29,7 @@ class ApiService {
     };
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  private static async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {
@@ -54,48 +46,91 @@ class ApiService {
     return response.json();
   }
 
+  static async checkAuth(): Promise<void> {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      try {
+        const userData = await this.request<{ user: User }>('/auth/me');
+        console.log('User data:', userData.user);
+        this.currentUser = userData.user;
+      } catch (error) {
+        localStorage.removeItem('authToken');
+        this.currentUser = null;
+        console.error('Error checking auth:', error);
+        throw new Error('Not authenticated. Please log in.')
+      }
+    }
+    else {
+        console.error('No token');
+        throw new Error('Not authenticated. Please log in.')
+    }
+  }
+
   // Auth methods
-  async login(credentials: LoginRequest): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    });
+  static async login(email: string, password: string): Promise<void> {
+    try {
+      const response = await this.request<AuthResponse>('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+
+      localStorage.setItem('authToken', response.token);
+      this.currentUser = response.user;
+      toast.success('Login successful!');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed';
+      toast.error(message);
+      throw error;
+    } finally {
+    }
   }
 
-  async register(userData: RegisterRequest): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(userData),
-    });
+  static async register(email: string, password: string, name: string): Promise<void> {
+    try {
+      const response = await this.request<AuthResponse>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      localStorage.setItem('authToken', response.token);
+      this.currentUser = response.user;
+      toast.success('Registration successful!');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Registration failed';
+      toast.error(message);
+      throw error;
+    } finally {
+    }
   }
 
-  async getMe(): Promise<User> {
-    return this.request<User>('/auth/me');
+  static logout(): void {
+    localStorage.removeItem('authToken');
+    this.currentUser = null;
+    toast.info('Logged out successfully');
   }
 
-  async getUsers(): Promise<User[]> {
+  // Getters for auth state
+  static get user(): User | null {
+    return this.currentUser;
+  }
+
+  static get getCurrentUser(): User | null {
+    return this.currentUser;
+  }
+
+  static async getUsers(): Promise<User[]> {
     return this.request<User[]>('/auth/users');
   }
 
-  async setRole(data: SetRoleRequest): Promise<void> {
+  static async setRole(data: SetRoleRequest): Promise<void> {
     return this.request<void>('/auth/set-role', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
-  // Token management
-  setToken(token: string): void {
-    localStorage.setItem('authToken', token);
-  }
-
-  removeToken(): void {
-    localStorage.removeItem('authToken');
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('authToken');
+  // Helper method to check user role
+  static hasRole(requiredRole: 'ADMIN' | 'USER'): boolean {
+    return this.currentUser?.role === requiredRole;
   }
 }
-
-export const apiService = new ApiService();
