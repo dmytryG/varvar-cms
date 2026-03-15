@@ -6,6 +6,8 @@ import {fileURLToPath} from "url"
 import {createAuthController} from "./controllers/AuthController"
 import {UserService} from "./services/UserService"
 import {Global} from "./Global";
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -35,6 +37,11 @@ export class CMS {
         // health
         Global.app.get("/health", (req, res) => {
             res.json({ok: true})
+        })
+
+        Global.app.get("/api/version", (req, res) => {
+            // TODO
+            res.json({ version: 'Alpha-1' });
         })
 
         // API routes

@@ -20,6 +20,7 @@ export interface SetRoleRequest {
 
 export class APIService {
   private static currentUser: User | null = null;
+  private static BEVersion: string = 'Unknown';
 
   private static getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('authToken');
@@ -45,6 +46,21 @@ export class APIService {
 
     return response.json();
   }
+
+    static async version(): Promise<string> {
+        try {
+            if (this.BEVersion !== 'Unknown') return this.BEVersion;
+            const response = await this.request<{ version: string }>('/version', {
+                method: 'GET',
+            });
+            this.BEVersion = response.version;
+            return response.version;
+        } catch (error) {
+            console.error('Error fetching version:', error);
+            return 'Unknown';
+        } finally {
+        }
+    }
 
   static async checkAuth(): Promise<void> {
     const token = localStorage.getItem('authToken');
@@ -116,17 +132,6 @@ export class APIService {
 
   static get getCurrentUser(): User | null {
     return this.currentUser;
-  }
-
-  static async getUsers(): Promise<User[]> {
-    return this.request<User[]>('/auth/users');
-  }
-
-  static async setRole(data: SetRoleRequest): Promise<void> {
-    return this.request<void>('/auth/set-role', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
   }
 
   // Helper method to check user role

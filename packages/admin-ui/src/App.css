@@ -100,6 +100,18 @@ a:hover {
     width: 100%;
 }
 
+.side-menu-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #242650;
+    padding: 10px;
+}
+
+.page-with-side-menu-container {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
 
 .large-text {
     font-size: 1.5rem;

@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import {Header} from "../components/Header.tsx";
 import {PageWithSideMenu} from "../components/PageWithSideMenu.tsx";
-import {Link} from "react-router-dom";
 
-export const Dashboard: React.FC = () => {
+export const UserManagement: React.FC = () => {
   return (
     <div>
-        <Header strictAuth={true}/>
+        <Header strictAuth={true} toDashIfLoggedIn={false}/>
         <PageWithSideMenu>
-            Dashboard
+            <div>Dashboard</div>
         </PageWithSideMenu>
     </div>
   );

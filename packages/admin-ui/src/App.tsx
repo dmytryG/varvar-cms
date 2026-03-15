@@ -7,6 +7,7 @@ import './App.css';
 import {Login} from "./pages/Login.tsx";
 import {Register} from "./pages/Register.tsx";
 import {Dashboard} from "./pages/Dashboard.tsx";
+import {UserManagement} from "./pages/UserManagement.tsx";
 
 function App() {
     useEffect(() => {
@@ -20,6 +21,7 @@ function App() {
                     <Route path="/admin/login" element={<Login/>}/>
                     <Route path="/admin/register" element={<Register/>}/>
                     <Route path="/admin/dashboard" element={<Dashboard/>}/>
+                    <Route path="/admin/user-management" element={<UserManagement/>}/>
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace/>}/>
                 </Routes>
 
