@@ -22,7 +22,7 @@ export const Register: React.FC = () => {
 
         setIsSubmitting(true);
         try {
-            await APIService.register(email, password, name);
+            await APIService.register(email, password);
             navigate('/dashboard');
         } catch (error) {
             // Error is handled in AuthAPI with toast
@@ -34,62 +34,53 @@ export const Register: React.FC = () => {
     return (
         <div>
             <Header toDashIfLoggedIn={true}/>
-            <h2>Register for CMS</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        disabled={isSubmitting}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={isSubmitting}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={isSubmitting}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        disabled={isSubmitting}
-                    />
-                </div>
-                <button
-                    type="submit"
-                    disabled={isSubmitting || !email || !password || !name || !confirmPassword}
-                >
-                    {isSubmitting ? 'Registering...' : 'Register'}
-                </button>
-            </form>
-            <p>
-                Already have an account? <Link to="/admin/login">Login here</Link>
-            </p>
+            <div className={'form-container'}>
+                <form onSubmit={handleSubmit} className={'form-box width-50'}>
+                    <h2>Register for CMS</h2>
+                    <div className={'form-input-container'}>
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div className={'form-input-container'}>
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div className={'form-input-container'}>
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting || !email || !password || !name || !confirmPassword}
+                    >
+                        {isSubmitting ? 'Registering...' : 'Register'}
+                    </button>
+                </form>
+                <p>
+                    Already have an account? <Link to="/admin/login">Login here</Link>
+                </p>
+            </div>
         </div>
     );
 };

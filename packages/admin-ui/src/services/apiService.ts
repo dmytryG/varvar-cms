@@ -85,7 +85,7 @@ export class APIService {
     }
   }
 
-  static async register(email: string, password: string, name: string): Promise<void> {
+  static async register(email: string, password: string): Promise<void> {
     try {
       const response = await this.request<AuthResponse>('/auth/register', {
         method: 'POST',

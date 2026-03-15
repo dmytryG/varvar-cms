@@ -42,17 +42,24 @@ export function Header({strictAuth, toDashIfLoggedIn}: { strictAuth?: boolean, t
 
 
     return (
-        <div>
-            Varvar CMS
-            {user?.email ? (
-                <div>
-                    Welcome {user.email} ({user.role})
-                    <button onClick={(e) => {
-                        e.preventDefault();
-                        logout();
-                    }}>Logout</button>
+        <div className={'header-box'}>
+            <div className={'small-content-box'} onClick={() => navigate("/admin/dashboard")}>
+                <div className={'horizontal-lineral-container'}>
+                    <img className={'logo'} src={'public/logo.svg'}/>
+                    <span>Varvar CMS</span>
                 </div>
-            ) : <></>}
+            </div>
+            <div className={'small-content-box'}>
+                {user?.email ? (
+                    <div className={'horizontal-lineral-container'}>
+                        <span>Welcome, {user.email} ({user.role})</span>
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            logout();
+                        }}>Logout</button>
+                    </div>
+                ) : <></>}
+            </div>
         </div>
     )
 }

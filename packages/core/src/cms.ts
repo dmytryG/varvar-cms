@@ -1,4 +1,5 @@
 import express from "express"
+import cors from "cors"
 import {MongoClient} from "mongodb"
 import path from "path"
 import {fileURLToPath} from "url"
@@ -29,6 +30,7 @@ export class CMS {
     public start() {
         // common middlewares
         Global.app.use(express.json())
+        Global.app.use(cors())
 
         // health
         Global.app.get("/health", (req, res) => {

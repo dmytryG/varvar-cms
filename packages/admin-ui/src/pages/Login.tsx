@@ -27,40 +27,42 @@ export const Login: React.FC = () => {
     return (
         <div>
             <Header toDashIfLoggedIn={true}/>
-            <h2>Login to CMS</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        disabled={isSubmitting}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={isSubmitting}
-                    />
-                </div>
-                <button
-                    type="submit"
-                    disabled={isSubmitting || !email || !password}
-                >
-                    {isSubmitting ? 'Logging in...' : 'Login'}
-                </button>
-            </form>
-            <p>
-                Don't have an account? <Link to="/admin/register">Register here</Link>
-            </p>
+            <div className={'form-container'}>
+                <form onSubmit={handleSubmit} className={'form-box width-50'}>
+                    <h2>Login to CMS</h2>
+                    <div className={'form-input-container'}>
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <div className={'form-input-container'}>
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            disabled={isSubmitting}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting || !email || !password}
+                    >
+                        {isSubmitting ? 'Logging in...' : 'Login'}
+                    </button>
+                </form>
+                <p>
+                    Don't have an account? <Link to="/admin/register">Register here</Link>
+                </p>
+            </div>
         </div>
     );
 };
