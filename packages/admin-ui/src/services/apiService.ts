@@ -18,6 +18,14 @@ export interface SetRoleRequest {
   role: 'ADMIN' | 'USER';
 }
 
+export interface DeleteUserRequest {
+  userId: string;
+}
+
+export interface UsersResponse {
+  users: User[];
+}
+
 export class APIService {
   private static currentUser: User | null = null;
   private static BEVersion: string = 'Unknown';
@@ -137,5 +145,47 @@ export class APIService {
   // Helper method to check user role
   static hasRole(requiredRole: 'ADMIN' | 'USER'): boolean {
     return this.currentUser?.role === requiredRole;
+  }
+
+  // User management methods
+  static async listUsers(): Promise<User[]> {
+    try {
+      const response = await this.request<UsersResponse>('/users', {
+        method: 'GET',
+      });
+      return response.users;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to fetch users';
+      toast.error(message);
+      throw error;
+    }
+  }
+
+  static async setUserRole(userId: string, role: 'ADMIN' | 'USER'): Promise<void> {
+    try {
+      await this.request<{ ok: boolean }>('/users/set-role', {
+        method: 'POST',
+        body: JSON.stringify({ userId, role }),
+      });
+      toast.success('User role updated successfully');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update user role';
+      toast.error(message);
+      throw error;
+    }
+  }
+
+  static async deleteUser(userId: string): Promise<void> {
+    try {
+      await this.request<{ ok: boolean }>('/users', {
+        method: 'DELETE',
+        body: JSON.stringify({ userId }),
+      });
+      toast.success('User deleted successfully');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to delete user';
+      toast.error(message);
+      throw error;
+    }
   }
 }

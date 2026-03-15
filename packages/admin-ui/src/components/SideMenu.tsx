@@ -20,8 +20,6 @@ export function SideMenu() {
         <div className={'side-menu-box'}>
             <Link to={'/admin/dashboard'}>Dashboard</Link>
             <Link to={'/admin/user-management'}>User management</Link>
-            <span>Side menu 2</span>
-            <span>Side menu 3</span>
             <span>BE version: {version}</span>
         </div>
     )

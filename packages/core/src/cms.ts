@@ -8,6 +8,7 @@ import {UserService} from "./services/UserService"
 import {Global} from "./Global";
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import {createUsersController} from "./controllers/UserController";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -46,6 +47,7 @@ export class CMS {
 
         // API routes
         Global.app.use("/api/auth", createAuthController())
+        Global.app.use("/api/users", createUsersController())
 
         // admin static
         Global.app.use("/admin", express.static(adminPath))

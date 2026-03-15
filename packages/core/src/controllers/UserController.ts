@@ -3,10 +3,10 @@ import {UserService} from "../services/UserService"
 import {requireRole} from "../middlewares/AuthMiddleware";
 import {deleteUserSchema, setRoleSchema} from "../validators/UserValidator";
 
-export function createAuthController(): Router {
+export function createUsersController(): Router {
     const router = Router()
 
-    router.get("/users", requireRole("ADMIN"), async (req, res) => {
+    router.get("/", requireRole("ADMIN"), async (req, res) => {
         const users = await UserService.listUsers()
         res.json({
             users: users.map(u => ({
@@ -18,7 +18,7 @@ export function createAuthController(): Router {
         })
     })
 
-    router.post("/users/set-role", requireRole("ADMIN"), async (req, res) => {
+    router.post("/set-role", requireRole("ADMIN"), async (req, res) => {
         try {
             const body = await setRoleSchema.validate(req.body, {abortEarly: false, stripUnknown: true})
             const ok = await UserService.setRole(body.userId, body.role)
@@ -32,7 +32,7 @@ export function createAuthController(): Router {
         }
     })
 
-    router.delete("/users", requireRole("ADMIN"), async (req, res) => {
+    router.delete("/", requireRole("ADMIN"), async (req, res) => {
         try {
             const body = await deleteUserSchema.validate(req.body, {abortEarly: false, stripUnknown: true})
             const ok = await UserService.delete(body.userId)

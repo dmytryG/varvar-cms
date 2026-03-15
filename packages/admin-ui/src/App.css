@@ -39,6 +39,20 @@ button {
     line-height: 1.1;
 }
 
+.red-background {
+    background-color: #dc3545;
+}
+
+select {
+    background-color: #15173D;
+    padding: 10px;
+    border: 1px solid #E491C9;
+    border-radius: 5px;
+    color: #F1E9E9;
+    font-size: 1em;
+    line-height: 1.1;
+}
+
 a {
     text-decoration: none;
     color: #E491C9;
@@ -113,65 +127,12 @@ a:hover {
     grid-template-columns: 1fr 5fr;
 }
 
+.page-content-view {
+    padding: 10px;
+}
+
 .large-text {
     font-size: 1.5rem;
-}
-
-.content-handler-box {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup-handler-box {
-    width: 100%;
-    min-height: 50vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup-box {
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    background-color: #242650;
-}
-
-.content-box {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    background-color: #242650;
-}
-
-.vertical-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.menu-and-content-view {
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-}
-
-.horizontal-1-2-view {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-}
-
-.vertical-list-tight {
-    display: flex;
-    flex-direction: column;
 }
 
 

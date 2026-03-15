@@ -6,7 +6,7 @@ export const PageWithSideMenu = ({ children }) => {
             <div>
                 <SideMenu/>
             </div>
-            <div>
+            <div className={'page-content-view'}>
                 {children}
             </div>
         </div>
