@@ -10,7 +10,7 @@ export function createPageController(): Router {
     const router = Router()
 
     // List pages by project
-    router.get("/project/:projectSlug", requireRole("USER"), async (req: AuthenticatedRequest, res) => {
+    router.get("/project/:projectSlug", requireRole(), async (req: AuthenticatedRequest, res) => {
         try {
             const params = await projectSlugRequired.validate(req.params, {abortEarly: false, stripUnknown: true})
             const pages = await PageService.listProjectPages(params.projectSlug)
@@ -21,7 +21,7 @@ export function createPageController(): Router {
     })
 
     // Get page versions
-    router.get("/versions/:slug/:language/:projectSlug", requireRole("USER"), async (req: AuthenticatedRequest, res) => {
+    router.get("/versions/:slug/:language/:projectSlug", requireRole(), async (req: AuthenticatedRequest, res) => {
         try {
             const {slug, language, projectSlug} = await pageDefining.validate(req.params, {
                 abortEarly: false,
@@ -35,7 +35,7 @@ export function createPageController(): Router {
     })
 
     // Get page to edit
-    router.get("/editable/:slug/:language/:projectSlug", requireRole("USER"), async (req: AuthenticatedRequest, res) => {
+    router.get("/editable/:slug/:language/:projectSlug", requireRole(), async (req: AuthenticatedRequest, res) => {
         try {
             const {slug, language, projectSlug} = await pageDefining.validate(req.params, {
                 abortEarly: false,
@@ -47,6 +47,7 @@ export function createPageController(): Router {
             return res.status(500).json({error: "Internal Server Error"})
         }
     })
+
 
     // Create new page
     router.post("/:slug/:language/:projectSlug", requireRole("ADMIN"), async (req: AuthenticatedRequest, res) => {
@@ -74,6 +75,8 @@ export function createPageController(): Router {
                 stripUnknown: true
             })
             const body = await updatePageDataSchema.validate(req.body, {abortEarly: false, stripUnknown: true})
+            console.log('req.body', req.body)
+            console.log('Updating page: ', slug, language, projectSlug, ' with data:', body.data)
 
             const success = await PageService.updatePageData(slug, projectSlug, language, body.data)
             if (!success) {
@@ -148,6 +151,21 @@ export function createPageController(): Router {
             if (e.name === 'ValidationError') {
                 return res.status(400).json({error: e.errors})
             }
+            return res.status(500).json({error: "Internal Server Error"})
+        }
+    })
+
+
+    // Get page by id
+    router.get("/:id", requireRole(), async (req: AuthenticatedRequest, res) => {
+        try {
+            const {id} = await idRequired.validate(req.params, {
+                abortEarly: false,
+                stripUnknown: true
+            })
+            const page = await PageService.findById(id)
+            res.json({data: page})
+        } catch (e: any) {
             return res.status(500).json({error: "Internal Server Error"})
         }
     })

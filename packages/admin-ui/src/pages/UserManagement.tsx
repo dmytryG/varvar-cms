@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Header} from "../components/Header.tsx";
 import {PageWithSideMenu} from "../components/PageWithSideMenu.tsx";
-import {APIService, type User} from "../services/APIService.ts";
+import {APIService, type User} from "../services/apiService.ts";
 import {toast} from "react-toastify";
 
 export const UserManagement: React.FC = () => {

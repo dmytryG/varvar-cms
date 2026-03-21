@@ -26,6 +26,49 @@ export interface UsersResponse {
   users: User[];
 }
 
+export interface Project {
+    id: string;
+    slug: string;
+    name: string;
+    description?: string;
+}
+
+export interface Page {
+    _id: string;
+    slug: string;
+    language: string;
+    projectSlug: string;
+    data: any;
+    isPublished: boolean;
+    isRoot: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface ProjectsResponse {
+    projects: Project[];
+}
+
+export interface ProjectResponse {
+    project: Project;
+}
+
+export interface PagesResponse {
+    pages: Page[];
+}
+
+export interface PageResponse {
+    page: Page;
+}
+
+export interface PageDataResponse {
+    data: Page;
+}
+
+export interface VersionsResponse {
+    versions: Page[];
+}
+
 export class APIService {
   private static currentUser: User | null = null;
   private static BEVersion: string = 'Unknown';
@@ -175,17 +218,208 @@ export class APIService {
     }
   }
 
-  static async deleteUser(userId: string): Promise<void> {
-    try {
-      await this.request<{ ok: boolean }>('/users', {
-        method: 'DELETE',
-        body: JSON.stringify({ userId }),
-      });
-      toast.success('User deleted successfully');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to delete user';
-      toast.error(message);
-      throw error;
+    static async deleteUser(userId: string): Promise<void> {
+        try {
+            await this.request<{ ok: boolean }>('/users', {
+                method: 'DELETE',
+                body: JSON.stringify({ userId }),
+            });
+            toast.success('User deleted successfully');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to delete user';
+            toast.error(message);
+            throw error;
+        }
     }
-  }
+
+    // Project management methods
+    static async listProjects(): Promise<Project[]> {
+        try {
+            const response = await this.request<ProjectsResponse>('/projects', {
+                method: 'GET',
+            });
+            return response.projects;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to fetch projects';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async getProject(id: string): Promise<Project> {
+        try {
+            const response = await this.request<ProjectResponse>(`/projects/${id}`, {
+                method: 'GET',
+            });
+            return response.project;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to fetch project';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async createProject(slug: string, name: string, description?: string): Promise<Project> {
+        try {
+            const response = await this.request<ProjectResponse>('/projects', {
+                method: 'POST',
+                body: JSON.stringify({ slug, name, description }),
+            });
+            toast.success('Project created successfully');
+            return response.project;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to create project';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async updateProject(id: string, project: Partial<Project>): Promise<Project> {
+        try {
+            const response = await this.request<ProjectResponse>(`/projects/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(project),
+            });
+            toast.success('Project updated successfully');
+            return response.project;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to update project';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async deleteProject(id: string): Promise<void> {
+        try {
+            await this.request<{ message: string }>(`/projects/${id}`, {
+                method: 'DELETE',
+            });
+            toast.success('Project deleted successfully');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to delete project';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    // Page management methods
+    static async listProjectPages(projectSlug: string): Promise<Page[]> {
+        try {
+            const response = await this.request<PagesResponse>(`/pages/project/${projectSlug}`, {
+                method: 'GET',
+            });
+            return response.pages;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to fetch project pages';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async getPageVersions(slug: string, language: string, projectSlug: string): Promise<Page[]> {
+        try {
+            const response = await this.request<VersionsResponse>(`/pages/versions/${slug}/${language}/${projectSlug}`, {
+                method: 'GET',
+            });
+            return response.versions;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to fetch page versions';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async getEditablePage(slug: string, language: string, projectSlug: string): Promise<Page> {
+        try {
+            const response = await this.request<PageDataResponse>(`/pages/editable/${slug}/${language}/${projectSlug}`, {
+                method: 'GET',
+            });
+            return response.data;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to fetch page for editing';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async getPageById(id: string): Promise<Page> {
+        try {
+            const response = await this.request<PageDataResponse>(`/pages/${id}`, {
+                method: 'GET',
+            });
+            return response.data;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to fetch page for editing';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async createPage(slug: string, language: string, projectSlug: string, data: any): Promise<Page> {
+        try {
+            const response = await this.request<PageResponse>(`/pages/${slug}/${language}/${projectSlug}`, {
+                method: 'POST',
+                body: JSON.stringify({ data }),
+            });
+            toast.success('Page created successfully');
+            return response.page;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to create page';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async updatePageData(slug: string, projectSlug: string, language: string, data: any): Promise<void> {
+        try {
+            await this.request<{ ok: boolean }>(`/pages/${slug}/${language}/${projectSlug}`, {
+                method: 'PUT',
+                body: JSON.stringify({ data }),
+            });
+            toast.success('Page updated successfully');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to update page';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async publishPage(slug: string, language: string, projectSlug: string): Promise<void> {
+        try {
+            await this.request<{ message: string }>(`/pages/publish/${slug}/${language}/${projectSlug}`, {
+                method: 'POST',
+            });
+            toast.success('Page published successfully');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to publish page';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async unpublishPage(slug: string, language: string, projectSlug: string): Promise<void> {
+        try {
+            await this.request<{ message: string }>(`/pages/unpublish/${slug}/${language}/${projectSlug}`, {
+                method: 'POST',
+            });
+            toast.success('Page unpublished successfully');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to unpublish page';
+            toast.error(message);
+            throw error;
+        }
+    }
+
+    static async deletePageVersion(id: string): Promise<void> {
+        try {
+            await this.request<{ message: string }>(`/pages/${id}`, {
+                method: 'DELETE',
+            });
+            toast.success('Page version deleted successfully');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to delete page version';
+            toast.error(message);
+            throw error;
+        }
+    }
 }

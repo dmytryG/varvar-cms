@@ -7,7 +7,7 @@ export interface PageDoc {
     slug: string
     language: string
     projectSlug: string
-    data: any // JSON field with actual page data
+    data?: any // JSON field with actual page data
     isPublished: boolean
     createdAt: Date
     updatedAt: Date
@@ -76,9 +76,16 @@ export class PageService {
         )
     }
 
+    static async findById(id: string): Promise<PageDoc | null> {
+        const col = this.collection()
+        return col.findOne(
+            { _id: new ObjectId(id) },
+        )
+    }
+
     static async listPageVersions(slug: string, language: string, projectSlug: string): Promise<PageDoc[]> {
         const col = this.collection()
-        return col.find({slug, language, projectSlug}).sort({createdAt: -1}).toArray()
+        return col.find({slug, language, projectSlug}, { projection: { data: 0 } }).sort({createdAt: -1}).toArray()
     }
 
     static async updatePageData(slug: string, projectSlug: string, language: string, data: any): Promise<boolean> {

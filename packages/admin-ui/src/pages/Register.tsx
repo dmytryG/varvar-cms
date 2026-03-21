@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import {APIService} from "../services/APIService.ts";
+import {APIService} from "../services/apiService.ts";
 import {Header} from "../components/Header.tsx";
 
 export const Register: React.FC = () => {

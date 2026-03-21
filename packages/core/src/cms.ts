@@ -9,6 +9,8 @@ import {Global} from "./Global";
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import {createUsersController} from "./controllers/UserController";
+import {createProjectController} from "./controllers/ProjectController";
+import {createPageController} from "./controllers/PageController";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -48,6 +50,8 @@ export class CMS {
         // API routes
         Global.app.use("/api/auth", createAuthController())
         Global.app.use("/api/users", createUsersController())
+        Global.app.use("/api/projects", createProjectController())
+        Global.app.use("/api/pages", createPageController())
 
         // admin static
         Global.app.use("/admin", express.static(adminPath))

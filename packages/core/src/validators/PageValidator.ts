@@ -1,7 +1,7 @@
 import * as yup from "yup"
 
 export const updatePageDataSchema = yup.object({
-  data: yup.object().required(),
+  data: yup.mixed().required(),
 })
 
 export const pageDefining = yup.object({

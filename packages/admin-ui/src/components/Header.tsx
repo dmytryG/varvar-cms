@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {APIService, type User} from "../services/APIService.ts";
+import {APIService, type User} from "../services/apiService.ts";
 import {useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 
@@ -45,7 +45,7 @@ export function Header({strictAuth, toDashIfLoggedIn}: { strictAuth?: boolean, t
         <div className={'header-box'}>
             <div className={'small-content-box'} onClick={() => navigate("/admin/dashboard")}>
                 <div className={'horizontal-lineral-container'}>
-                    <img className={'logo'} src={'public/logo.svg'}/>
+                    <img className={'logo'} src={'/public/logo.svg'}/>
                     <span>Varvar CMS</span>
                 </div>
             </div>

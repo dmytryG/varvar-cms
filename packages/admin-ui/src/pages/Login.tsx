@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import {APIService} from "../services/APIService.ts";
 import {Header} from "../components/Header.tsx";
+import {APIService} from "../services/apiService.ts";
 
 export const Login: React.FC = () => {
     const [email, setEmail] = useState('');

@@ -11,7 +11,7 @@ export function createProjectController(): Router {
     const router = Router()
 
     // List all projects
-    router.get("/", requireRole("USER"), async (req: AuthenticatedRequest, res) => {
+    router.get("/", requireRole(), async (req: AuthenticatedRequest, res) => {
         try {
             const projects = await ProjectService.listProjects()
             res.json({projects})
@@ -21,7 +21,7 @@ export function createProjectController(): Router {
     })
 
     // Get project by ID
-    router.get("/:id", requireRole("USER"), async (req: AuthenticatedRequest, res) => {
+    router.get("/:id", requireRole(), async (req: AuthenticatedRequest, res) => {
         try {
             const params = await projectParamsSchema.validate(req.params, {abortEarly: false, stripUnknown: true})
             const project = await ProjectService.findById(params.id)

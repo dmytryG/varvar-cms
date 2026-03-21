@@ -29,7 +29,9 @@ file for all API requests. Let's start with auth implementation
 Iteration 4: Let's add project management and page management. So Project is just a CRUD for grouping
 pages, the project entity consists of slug, name, description (optional) and list of pages. So user ofc can create, 
 delete, update, get list, get particular project. Project also stores a list of page slugs. The page is defined by 
-a slug, language code and project slug. Page contains JSON field with actual data, created_at, updated_at, isPublished, 
-slug, language, project. By default, new version of the page is created each time user press "Publish" button. The list of
-versions is presented to the user. When page is being published, all previous versions are marked as "isPublished: false" and only one
-that was just created is marked as "isPublished: true". By default, when user presses "Edit" page, the last version (by update_at) is shown.
+a slug, language code and project slug. Page contains JSON field with actual data, created_at, updated_at, isPublished, isRoot
+slug, language, project. The root page is the page that's actually being edited, it contains editable data. When user
+presses "Publish" button a snapshot of the root page is created and saved as a new page, all non root pages are
+being set to isPublished = false and the new pages is being set to isPublished = true. When watching a page content,
+a list of versions is displayed on the right side. Here is also a list of languages, if language is not pressed, user can
+create a page with new language code. User fills in the content as just JSON editor. All the non root pages are read-only.

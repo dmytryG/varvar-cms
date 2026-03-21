@@ -1,13 +1,16 @@
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import {ToastContainer} from 'react-toastify';
 import {useEffect} from 'react';
-import {APIService} from './services/APIService.ts';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import {Login} from "./pages/Login.tsx";
 import {Register} from "./pages/Register.tsx";
 import {Dashboard} from "./pages/Dashboard.tsx";
 import {UserManagement} from "./pages/UserManagement.tsx";
+import {ProjectManagement} from "./pages/ProjectManagement.tsx";
+import {PageManagement} from "./pages/PageManagement.tsx";
+import {PageEditor} from "./pages/PageEditor.tsx";
+import {APIService} from "./services/apiService.ts";
 
 function App() {
     useEffect(() => {
@@ -22,6 +25,9 @@ function App() {
                     <Route path="/admin/register" element={<Register/>}/>
                     <Route path="/admin/dashboard" element={<Dashboard/>}/>
                     <Route path="/admin/user-management" element={<UserManagement/>}/>
+                    <Route path="/admin/projects" element={<ProjectManagement/>}/>
+                    <Route path="/admin/projects/:projectSlug/pages" element={<PageManagement/>}/>
+                    <Route path="/admin/projects/:projectSlug/pages/:slug/:language" element={<PageEditor/>}/>
                     <Route path="*" element={<Navigate to="/admin/dashboard" replace/>}/>
                 </Routes>
 

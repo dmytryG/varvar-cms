@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {APIService, type User} from "../services/APIService.ts";
+import {APIService, type User} from "../services/apiService.ts";
 import {Link, useNavigate} from "react-router-dom";
 import {toast} from "react-toastify";
 
@@ -19,6 +19,7 @@ export function SideMenu() {
     return (
         <div className={'side-menu-box'}>
             <Link to={'/admin/dashboard'}>Dashboard</Link>
+            <Link to={'/admin/projects'}>Projects</Link>
             <Link to={'/admin/user-management'}>User management</Link>
             <span>BE version: {version}</span>
         </div>
