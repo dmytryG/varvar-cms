@@ -53,7 +53,7 @@ export const ProjectManagement: React.FC = () => {
             <Header strictAuth={true} />
             <PageWithSideMenu>
                 <div className="page-content-view">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <div>
                         <h2 className="large-text">Projects</h2>
                         <button onClick={() => setIsAdding(!isAdding)}>
                             {isAdding ? 'Cancel' : 'Add Project'}
@@ -61,7 +61,7 @@ export const ProjectManagement: React.FC = () => {
                     </div>
 
                     {isAdding && (
-                        <div style={{ marginBottom: '30px', padding: '20px', border: '1px solid #E491C9', borderRadius: '5px' }}>
+                        <div>
                             <h3>New Project</h3>
                             <form onSubmit={handleCreateProject} className="form-box">
                                 <div className="form-input-container">
@@ -87,7 +87,6 @@ export const ProjectManagement: React.FC = () => {
                                     <textarea
                                         value={newProject.description}
                                         onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                                        style={{ backgroundColor: '#15173D', color: '#F1E9E9', border: '1px solid #E491C9', borderRadius: '5px', padding: '10px' }}
                                     />
                                 </div>
                                 <button type="submit">Create</button>
@@ -101,24 +100,23 @@ export const ProjectManagement: React.FC = () => {
                         <table>
                             <thead>
                                 <tr>
-                                    <th style={{ textAlign: 'left', padding: '10px' }}>Name</th>
-                                    <th style={{ textAlign: 'left', padding: '10px' }}>Slug</th>
-                                    <th style={{ textAlign: 'left', padding: '10px' }}>Description</th>
-                                    <th style={{ textAlign: 'right', padding: '10px' }}>Actions</th>
+                                    <th>Name</th>
+                                    <th>Slug</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {projects.map((project) => (
                                     <tr key={project.id}>
-                                        <td style={{ padding: '10px' }}>
+                                        <td>
                                             <Link to={`/admin/projects/${project.slug}/pages`}>{project.name}</Link>
                                         </td>
-                                        <td style={{ padding: '10px' }}>{project.slug}</td>
-                                        <td style={{ padding: '10px' }}>{project.description}</td>
-                                        <td style={{ padding: '10px', textAlign: 'right' }}>
+                                        <td>{project.slug}</td>
+                                        <td>{project.description}</td>
+                                        <td>
                                             <button 
                                                 onClick={() => handleDeleteProject(project.id)}
-                                                style={{ color: '#E491C9', border: '1px solid #E491C9', background: 'none', cursor: 'pointer' }}
                                             >
                                                 Delete
                                             </button>

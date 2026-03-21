@@ -4,9 +4,14 @@ import { Header } from "../components/Header.tsx";
 import { PageWithSideMenu } from "../components/PageWithSideMenu.tsx";
 import { APIService, type Page } from "../services/apiService.ts";
 
+export type PageItemDto = {
+    page: Page;
+    pages: Page[];
+}
+
 export const PageManagement: React.FC = () => {
     const { projectSlug } = useParams<{ projectSlug: string }>();
-    const [pages, setPages] = useState<Page[]>([]);
+    const [pages, setPages] = useState<PageItemDto[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
     const [newPage, setNewPage] = useState({ slug: '', language: 'en', data: '{}' });
@@ -15,7 +20,17 @@ export const PageManagement: React.FC = () => {
         if (!projectSlug) return;
         try {
             const data = await APIService.listProjectPages(projectSlug);
-            setPages(data);
+            const pagesMap = new Map<string, PageItemDto>();
+            for (const page of data) {
+                if (!page.isRoot) continue;
+                const existingPage = pagesMap.get(page.slug);
+                if (!existingPage) {
+                    pagesMap.set(page.slug, { page, pages: [page] });
+                } else {
+                    pagesMap.set(page.slug, { page, pages: [...existingPage.pages, page] });
+                }
+            }
+            setPages(Array.from(pagesMap.values()));
         } catch (error) {
             console.error(error);
         } finally {
@@ -52,7 +67,7 @@ export const PageManagement: React.FC = () => {
             <Header strictAuth={true} />
             <PageWithSideMenu>
                 <div className="page-content-view">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <div>
                         <h2 className="large-text">Pages for Project: {projectSlug}</h2>
                         <button onClick={() => setIsAdding(!isAdding)}>
                             {isAdding ? 'Cancel' : 'Add Page'}
@@ -60,7 +75,7 @@ export const PageManagement: React.FC = () => {
                     </div>
 
                     {isAdding && (
-                        <div style={{ marginBottom: '30px', padding: '20px', border: '1px solid #E491C9', borderRadius: '5px' }}>
+                        <div>
                             <h3>New Page</h3>
                             <form onSubmit={handleCreatePage} className="form-box">
                                 <div className="form-input-container">
@@ -86,7 +101,6 @@ export const PageManagement: React.FC = () => {
                                     <textarea
                                         value={newPage.data}
                                         onChange={(e) => setNewPage({ ...newPage, data: e.target.value })}
-                                        style={{ backgroundColor: '#15173D', color: '#F1E9E9', border: '1px solid #E491C9', borderRadius: '5px', padding: '10px', height: '100px', fontFamily: 'monospace' }}
                                     />
                                 </div>
                                 <button type="submit">Create</button>
@@ -97,38 +111,33 @@ export const PageManagement: React.FC = () => {
                     {loading ? (
                         <p>Loading pages...</p>
                     ) : (
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style={{ textAlign: 'left', padding: '10px' }}>Slug</th>
-                                    <th style={{ textAlign: 'left', padding: '10px' }}>Language</th>
-                                    <th style={{ textAlign: 'left', padding: '10px' }}>Status</th>
-                                    <th style={{ textAlign: 'left', padding: '10px' }}>Version</th>
-                                    <th style={{ textAlign: 'right', padding: '10px' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {pages.filter(p => p.isRoot).map((page) => (
-                                    <tr key={page._id}>
-                                        <td style={{ padding: '10px' }}>
-                                            <Link to={`/admin/projects/${projectSlug}/pages/${page.slug}/${page.language}`}>
-                                                {page.slug}
-                                            </Link>
-                                        </td>
-                                        <td style={{ padding: '10px' }}>{page.language}</td>
-                                        <td style={{ padding: '10px' }}>
-                                            {page.isPublished ? <span style={{ color: '#91e4bf' }}>Published</span> : <span style={{ color: 'gray' }}>Draft</span>}
-                                        </td>
-                                        <td style={{ padding: '10px' }}>{page._id}</td>
-                                        <td style={{ padding: '10px', textAlign: 'right' }}>
-                                            <Link to={`/admin/projects/${projectSlug}/pages/${page.slug}/${page.language}`}>
-                                                Edit
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <div>
+                            {pages.map((page) => (
+                                <div>
+                                    <span>{page.page.slug}</span>
+                                    <table key={page.page._id}>
+                                        <thead>
+                                            <tr>
+                                                <th>Language</th>
+                                                <th>Actions</th>
+                                                <th>Created at</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {page.pages.map((p) => (
+                                            <tr key={p._id}>
+                                                <td>{p.language}</td>
+                                                <td>
+                                                    <Link to={`/admin/projects/${projectSlug}/pages/${p.slug}/${p.language}`}>Edit</Link>
+                                                </td>
+                                                <td>{new Date(p.createdAt).toLocaleString()}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ))}
+                        </div>
                     )}
                 </div>
             </PageWithSideMenu>
